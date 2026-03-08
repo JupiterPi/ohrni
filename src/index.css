@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    @apply text-slate-50 bg-slate-950 font-sans;
+  }
+
+  body {
+    @apply min-w-[320px] min-h-screen m-0 antialiased;
+    background:
+      radial-gradient(circle at top left, #1d2439, #020617 55%),
+      radial-gradient(circle at bottom right, #020617, #020617 60%);
+  }
+}
+
+@layer utilities {
+  .ohrni-card {
+    @apply rounded-3xl border border-slate-800/80 bg-slate-900/70 backdrop-blur-sm shadow-xl;
+  }
+
+  .ohrni-badge {
+    @apply inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-emerald-200;
+  }
+}
+
+@media (prefers-reduced-motion) {
+  *,
+  ::before,
+  ::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
