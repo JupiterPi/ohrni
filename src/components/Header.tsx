@@ -12,7 +12,7 @@ export function Header() {
           <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
             Ohrni
             <span className="ml-2 text-sm font-normal text-emerald-300/80 md:text-base">
-              a tiny ear gym
+              a tiny vibe-coded ear gym
             </span>
           </h1>
           <p className="mt-1 max-w-xl text-sm text-slate-300 md:text-[0.95rem]">

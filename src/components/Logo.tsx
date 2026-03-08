@@ -2,88 +2,37 @@ export function Logo() {
   return (
     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/15 ring-1 ring-emerald-400/40 shadow-[0_0_0_1px_rgba(16,185,129,0.35)]">
       <svg
-        viewBox="0 0 64 64"
+        viewBox="0 0 72 64"
         aria-hidden="true"
-        className="h-8 w-8 text-emerald-300"
+        className="h-8 w-9 text-emerald-300"
       >
-        {/* Bird head & beak */}
+        {/* Bird body + head — single organic silhouette */}
         <path
-          d="M18 32c0-9 7-16 16-16 6 0 11 3 14 8"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.6"
-          strokeLinecap="round"
+          fill="currentColor"
+          d="M36,19 C32,12 22,10 15,14 C8,18 3,27 4,35 C5,42 8,47 12,49
+             L4,57 L13,51 L7,60 L18,52
+             C23,55 30,54 35,49 C40,44 43,37 43,27 C43,22 40,19 36,19 Z"
         />
-        <path
-          d="M32 20l8-3-4 7"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+
+        {/* Upper beak (open mouth) */}
+        <polygon fill="currentColor" points="36,19 46,14 36,24" />
+
+        {/* Lower beak (open mouth) */}
+        <polygon fill="currentColor" points="36,29 46,32 36,33" />
+
         {/* Eye */}
-        <circle cx="30" cy="24" r="1.3" fill="currentColor" />
+        <circle fill="rgba(0,0,0,0.75)" cx="29" cy="20" r="2.6" />
 
-        {/* Body */}
-        <path
-          d="M18 32c1 10 7 16 14 16 7 0 12-5 14-14"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.4"
-          strokeLinecap="round"
-        />
+        {/* Two beamed eighth notes */}
+        <ellipse fill="currentColor" cx="54" cy="17" rx="4" ry="3" transform="rotate(-20 54 17)" />
+        <line stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" x1="57.5" y1="15" x2="57.5" y2="5" />
 
-        {/* Tail */}
-        <path
-          d="M22 40l-4 7"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.1"
-          strokeLinecap="round"
-        />
-        <path
-          d="M26 42l-2.5 7.5"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.1"
-          strokeLinecap="round"
-        />
+        <ellipse fill="currentColor" cx="62" cy="11" rx="4" ry="3" transform="rotate(-20 62 11)" />
+        <line stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" x1="65.5" y1="9" x2="65.5" y2="1" />
 
-        {/* Musical note the bird is chirping */}
-        <path
-          d="M41 18v10.5"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.4"
-          strokeLinecap="round"
-        />
-        <path
-          d="M41 18c3.2.5 5.3 1.4 7.5 3"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-        />
-        <circle cx="36" cy="30.5" r="2.4" fill="currentColor" />
-
-        {/* Little chirp lines */}
-        <path
-          d="M47 17.5c1.1.6 2 1.4 2.8 2.3"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-        />
-        <path
-          d="M45.5 15.5c.9.4 1.6.9 2.3 1.4"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.4"
-          strokeLinecap="round"
-        />
+        {/* Beam */}
+        <line stroke="currentColor" strokeWidth="3" strokeLinecap="round" x1="57.5" y1="5" x2="65.5" y2="1" />
       </svg>
     </div>
   );
 }
-
