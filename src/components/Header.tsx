@@ -1,5 +1,6 @@
 import { Logo } from "./Logo";
 import { LabelLanguageToggle } from "./LabelLanguageToggle";
+import { PlaySpeedToggle } from "./PlaySpeedToggle";
 
 export function Header() {
   return (
@@ -19,7 +20,8 @@ export function Header() {
           </p>
         </div>
       </div>
-      <div className="flex justify-start md:justify-end">
+      <div className="flex flex-wrap justify-start gap-2 md:justify-end">
+        <PlaySpeedToggle />
         <LabelLanguageToggle />
       </div>
     </header>

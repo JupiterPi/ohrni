@@ -11,6 +11,7 @@ import {
   midiToNoteName,
 } from "../../audio/musicTheory";
 import { playChordByMidi } from "../../audio/audioEngine";
+import { usePlaySpeed, chordOptionsForSpeed } from "../../audio/PlaySpeed";
 import { getBestStreak, updateBestStreak } from "../../utils/storage";
 import { useLabelLanguage } from "../../labels/LabelLanguage";
 
@@ -42,8 +43,11 @@ export function ChordTrainer() {
   const [confusionMap, setConfusionMap] = useState<Record<string, Record<string, number>>>({});
 
   const { language } = useLabelLanguage();
+  const { speed } = usePlaySpeed();
 
   const prevRootMidiRef = useRef<number | undefined>(undefined);
+  const speedRef = useRef(speed);
+  speedRef.current = speed;
 
   const answerable = !!current && !isPlaying;
 
@@ -57,7 +61,7 @@ export function ChordTrainer() {
     if (!current) return;
     try {
       setIsPlaying(true);
-      await playChordByMidi(current.rootMidi, current.quality.id);
+      await playChordByMidi(current.rootMidi, current.quality.id, chordOptionsForSpeed(speedRef.current));
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -78,7 +82,7 @@ export function ChordTrainer() {
       if (playImmediately) {
         try {
           setIsPlaying(true);
-          await playChordByMidi(q.rootMidi, q.quality.id);
+          await playChordByMidi(q.rootMidi, q.quality.id, chordOptionsForSpeed(speedRef.current));
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error(error);

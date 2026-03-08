@@ -92,7 +92,7 @@ function scheduleTone(
   oscillator.stop(startTime + duration + release);
 }
 
-interface IntervalPlaybackOptions {
+export interface IntervalPlaybackOptions {
   noteDuration?: number;
   gap?: number;
   togetherDuration?: number;
@@ -165,7 +165,7 @@ export async function playIntervalByMidi(
   }
 }
 
-interface ChordPlaybackOptions {
+export interface ChordPlaybackOptions {
   noteDuration?: number;
   gap?: number;
   blockDuration?: number;

@@ -10,6 +10,7 @@ import {
   createRandomIntervalQuestion,
 } from "../../audio/musicTheory";
 import { playIntervalByMidi } from "../../audio/audioEngine";
+import { usePlaySpeed, intervalOptionsForSpeed } from "../../audio/PlaySpeed";
 import { getBestStreak, updateBestStreak } from "../../utils/storage";
 import { useLabelLanguage } from "../../labels/LabelLanguage";
 
@@ -45,8 +46,11 @@ export function IntervalTrainer() {
   const [confusionMap, setConfusionMap] = useState<Record<string, Record<string, number>>>({});
 
   const { language } = useLabelLanguage();
+  const { speed } = usePlaySpeed();
 
   const prevRootMidiRef = useRef<number | undefined>(undefined);
+  const speedRef = useRef(speed);
+  speedRef.current = speed;
 
   const answerable = !!current && !isPlaying;
 
@@ -62,7 +66,7 @@ export function IntervalTrainer() {
     if (!current) return;
     try {
       setIsPlaying(true);
-      await playIntervalByMidi(current.rootMidi, current.intervalSemitones);
+      await playIntervalByMidi(current.rootMidi, current.intervalSemitones, intervalOptionsForSpeed(speedRef.current));
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -83,7 +87,7 @@ export function IntervalTrainer() {
       if (playImmediately) {
         try {
           setIsPlaying(true);
-          await playIntervalByMidi(q.rootMidi, q.intervalSemitones);
+          await playIntervalByMidi(q.rootMidi, q.intervalSemitones, intervalOptionsForSpeed(speedRef.current));
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error(error);
