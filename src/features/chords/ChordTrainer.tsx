@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../components/Button";
 import { StatsPanel } from "../../components/StatsPanel";
 import {
@@ -39,6 +39,8 @@ export function ChordTrainer() {
 
   const { language } = useLabelLanguage();
 
+  const prevRootMidiRef = useRef<number | undefined>(undefined);
+
   const answerable = !!current && !isPlaying;
 
   const spelledChord = useMemo(() => {
@@ -62,7 +64,8 @@ export function ChordTrainer() {
 
   const startNewQuestion = useCallback(
     async (playImmediately: boolean) => {
-      const q = createRandomChordQuestion();
+      const q = createRandomChordQuestion(prevRootMidiRef.current);
+      prevRootMidiRef.current = q.rootMidi;
       setCurrent(q);
       setSelectedId(null);
       setIsCorrect(null);
@@ -119,6 +122,7 @@ export function ChordTrainer() {
   }, [hasStarted, startNewQuestion]);
 
   const handleEndSession = () => {
+    prevRootMidiRef.current = undefined;
     setCurrent(null);
     setSelectedId(null);
     setIsCorrect(null);

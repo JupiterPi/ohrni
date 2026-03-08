@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../components/Button";
 import { StatsPanel } from "../../components/StatsPanel";
 import {
@@ -42,6 +42,8 @@ export function IntervalTrainer() {
 
   const { language } = useLabelLanguage();
 
+  const prevRootMidiRef = useRef<number | undefined>(undefined);
+
   const answerable = !!current && !isPlaying;
 
   const correctDefinition = useMemo<IntervalDefinition | null>(
@@ -67,7 +69,8 @@ export function IntervalTrainer() {
 
   const startNewQuestion = useCallback(
     async (playImmediately: boolean) => {
-      const q = createRandomIntervalQuestion();
+      const q = createRandomIntervalQuestion(prevRootMidiRef.current);
+      prevRootMidiRef.current = q.rootMidi;
       setCurrent(q);
       setSelected(null);
       setIsCorrect(null);
@@ -124,6 +127,7 @@ export function IntervalTrainer() {
   }, [hasStarted, startNewQuestion]);
 
   const handleEndSession = () => {
+    prevRootMidiRef.current = undefined;
     setCurrent(null);
     setSelected(null);
     setIsCorrect(null);

@@ -43,15 +43,38 @@ function getRandomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export function getRandomIntervalDefinition(): IntervalDefinition {
-  const index = getRandomInt(0, INTERVALS.length - 1);
-  return INTERVALS[index]!;
+function pitchClass(midi: number): number {
+  return ((midi % 12) + 12) % 12;
 }
 
-export function createRandomIntervalQuestion(): IntervalQuestion {
+// History-window randomizer: excludes the last ~half of all options from the
+// pool, so nothing repeats too soon, but the pool always has multiple candidates
+// making it impossible to predict what comes next.
+
+const INTERVAL_HISTORY_SIZE = Math.floor(INTERVALS.length / 2); // 6
+let intervalHistory: IntervalDefinition[] = [];
+
+export function getRandomIntervalDefinition(): IntervalDefinition {
+  const excluded = new Set(intervalHistory);
+  const pool = INTERVALS.filter(i => !excluded.has(i));
+  const chosen = pool[getRandomInt(0, pool.length - 1)]!;
+  intervalHistory.push(chosen);
+  if (intervalHistory.length > INTERVAL_HISTORY_SIZE) intervalHistory.shift();
+  return chosen;
+}
+
+export function createRandomIntervalQuestion(previousRootMidi?: number): IntervalQuestion {
   const def = getRandomIntervalDefinition();
   const highestAllowedRoot = INTERVAL_MAX_MIDI - def.semitones;
-  const rootMidi = getRandomInt(INTERVAL_MIN_MIDI, highestAllowedRoot);
+
+  const prevPC = previousRootMidi !== undefined ? pitchClass(previousRootMidi) : -1;
+  const validRoots: number[] = [];
+  for (let midi = INTERVAL_MIN_MIDI; midi <= highestAllowedRoot; midi++) {
+    if (pitchClass(midi) !== prevPC) validRoots.push(midi);
+  }
+  const pool = validRoots.length > 0 ? validRoots :
+    Array.from({ length: highestAllowedRoot - INTERVAL_MIN_MIDI + 1 }, (_, i) => INTERVAL_MIN_MIDI + i);
+  const rootMidi = pool[getRandomInt(0, pool.length - 1)]!;
 
   return {
     rootMidi,
@@ -144,16 +167,31 @@ export interface ChordQuestion {
   noteMidis: number[];
 }
 
+const CHORD_HISTORY_SIZE = Math.floor(CHORD_QUALITIES.length / 2); // 4
+let chordHistory: ChordQuality[] = [];
+
 export function getRandomChordQuality(): ChordQuality {
-  const index = getRandomInt(0, CHORD_QUALITIES.length - 1);
-  return CHORD_QUALITIES[index]!;
+  const excluded = new Set(chordHistory);
+  const pool = CHORD_QUALITIES.filter(q => !excluded.has(q));
+  const chosen = pool[getRandomInt(0, pool.length - 1)]!;
+  chordHistory.push(chosen);
+  if (chordHistory.length > CHORD_HISTORY_SIZE) chordHistory.shift();
+  return chosen;
 }
 
-export function createRandomChordQuestion(): ChordQuestion {
+export function createRandomChordQuestion(previousRootMidi?: number): ChordQuestion {
   const quality = getRandomChordQuality();
   const maxOffset = Math.max(...quality.semitoneOffsets);
   const highestAllowedRoot = CHORD_MAX_MIDI - maxOffset;
-  const rootMidi = getRandomInt(CHORD_MIN_MIDI, highestAllowedRoot);
+
+  const prevPC = previousRootMidi !== undefined ? pitchClass(previousRootMidi) : -1;
+  const validRoots: number[] = [];
+  for (let midi = CHORD_MIN_MIDI; midi <= highestAllowedRoot; midi++) {
+    if (pitchClass(midi) !== prevPC) validRoots.push(midi);
+  }
+  const pool = validRoots.length > 0 ? validRoots :
+    Array.from({ length: highestAllowedRoot - CHORD_MIN_MIDI + 1 }, (_, i) => CHORD_MIN_MIDI + i);
+  const rootMidi = pool[getRandomInt(0, pool.length - 1)]!;
   const noteMidis = quality.semitoneOffsets.map(offset => rootMidi + offset);
 
   return {
