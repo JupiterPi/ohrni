@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../components/Button";
 import { StatsPanel } from "../../components/StatsPanel";
+import { DetailedStatsPanel, type ItemStat } from "../../components/DetailedStatsPanel";
 import {
   CHORD_QUALITIES,
   type ChordQuality,
@@ -36,6 +37,9 @@ export function ChordTrainer() {
   const [correct, setCorrect] = useState(0);
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
+
+  const [accuracyMap, setAccuracyMap] = useState<Record<string, { correct: number; total: number }>>({});
+  const [confusionMap, setConfusionMap] = useState<Record<string, Record<string, number>>>({});
 
   const { language } = useLabelLanguage();
 
@@ -102,6 +106,23 @@ export function ChordTrainer() {
     setIsCorrect(correctNow);
     setTotal(prev => prev + 1);
 
+    const correctKey = current.quality.id;
+    const guessedKey = quality.id;
+
+    setAccuracyMap(prev => ({
+      ...prev,
+      [correctKey]: {
+        correct: (prev[correctKey]?.correct ?? 0) + (correctNow ? 1 : 0),
+        total: (prev[correctKey]?.total ?? 0) + 1,
+      },
+    }));
+    if (!correctNow) {
+      setConfusionMap(prev => {
+        const inner = prev[correctKey] ?? {};
+        return { ...prev, [correctKey]: { ...inner, [guessedKey]: (inner[guessedKey] ?? 0) + 1 } };
+      });
+    }
+
     if (correctNow) {
       setCorrect(prev => prev + 1);
       setStreak(prev => {
@@ -131,6 +152,8 @@ export function ChordTrainer() {
     setTotal(0);
     setCorrect(0);
     setStreak(0);
+    setAccuracyMap({});
+    setConfusionMap({});
   };
 
   useEffect(() => {
@@ -152,6 +175,34 @@ export function ChordTrainer() {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [hasStarted, handleReplay, handleNext, isCorrect]);
+
+  const getChordShortLabel = (quality: ChordQuality): string => {
+    const germanCode = GERMAN_CHORD_CODES[quality.id];
+    return language === "de" && germanCode ? germanCode : quality.label;
+  };
+
+  const detailedStats = useMemo<ItemStat[]>(() => {
+    return CHORD_QUALITIES.map(quality => {
+      const key = quality.id;
+      const stat = accuracyMap[key] ?? { correct: 0, total: 0 };
+      const confusion = confusionMap[key] ?? {};
+      const confusedWith = Object.entries(confusion)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 3)
+        .map(([guessedId, count]) => {
+          const def = CHORD_QUALITIES.find(q => q.id === guessedId)!;
+          return { label: def.label, shortLabel: getChordShortLabel(def), count };
+        });
+      return {
+        id: key,
+        label: quality.label,
+        shortLabel: getChordShortLabel(quality),
+        correct: stat.correct,
+        total: stat.total,
+        confusedWith,
+      };
+    });
+  }, [accuracyMap, confusionMap, language]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="flex h-full flex-col gap-4">
@@ -335,6 +386,8 @@ export function ChordTrainer() {
           </p>
         </div>
       </div>
+
+      <DetailedStatsPanel heading="Per-chord accuracy" items={detailedStats} />
     </div>
   );
 }
