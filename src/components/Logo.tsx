@@ -1,10 +1,10 @@
 export function Logo() {
   return (
-    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/15 ring-1 ring-emerald-400/40 shadow-[0_0_0_1px_rgba(16,185,129,0.35)]">
+    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/15 ring-1 ring-emerald-400/40 shadow-[0_0_0_1px_rgba(16,185,129,0.35)]">
       <svg
         viewBox="0 0 72 64"
         aria-hidden="true"
-        className="h-8 w-9 text-emerald-300"
+        className="h-8 w-8 text-emerald-300"
       >
         {/* Bird body + head — single organic silhouette */}
         <path
