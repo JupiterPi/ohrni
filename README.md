@@ -8,14 +8,26 @@ Ohrni is a tiny ear training playground — named after *Ornithology* and the Ge
 
 ## What you can do
 
-- **Interval practice**  
+- **Interval practice**
   Hear two notes in a comfortable two‑octave range: first the **lower**, then the **higher**, then **both together**. Guess the interval (unison up to octave), get instant feedback, and watch your streak climb.
 
-- **Chord practice**  
+- **Chord practice**
   Explore lush **four‑note** voicings (maj, min, dim7, aug, maj7, 7, add6, min7, min6). Each round plays an **arpeggio** followed by the **full chord**, then asks you to name the quality and shows you the spelling (C–E–G–B, etc.).
 
-- **Lightweight stats, zero pressure**  
-  See how many questions you’ve answered, your accuracy, and your current streak, plus a best‑streak badge stored locally in your browser. No accounts, no leaderboards, no pressure.
+- **Smart randomiser**
+  Questions are drawn from a sliding history window so every interval and chord quality appears regularly, but the pool always has multiple candidates — impossible to meta-guess what’s coming next. The root note also never repeats back-to-back.
+
+- **Detailed per-session stats**
+  Beyond the overall accuracy and streak, a per-item breakdown shows your hit rate on every individual interval or chord quality, plus the top three things you confused each one with. Resets when you end the session.
+
+- **Playback speed toggle**
+  Switch between **Normal** and **Slow** at any time. Slow mode stretches note durations and gaps so your ears have more time to lock on — useful when starting out or working through tricky intervals.
+
+- **German label option**
+  Toggle between English and German interval/chord abbreviations (e.g. *g3* instead of M3, *D* instead of Major).
+
+- **Zero pressure**
+  No accounts, no leaderboards. Best streak is stored locally in your browser.
 
 ## Tech bits
 
