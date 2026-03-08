@@ -10,6 +10,23 @@ import {
 } from "../../audio/musicTheory";
 import { playIntervalByMidi } from "../../audio/audioEngine";
 import { getBestStreak, updateBestStreak } from "../../utils/storage";
+import { useLabelLanguage } from "../../labels/LabelLanguage";
+
+const GERMAN_INTERVAL_CODES: Record<number, string> = {
+  0: "r1",
+  1: "k2",
+  2: "g2",
+  3: "k3",
+  4: "g3",
+  5: "r4",
+  6: "trit",
+  7: "r5",
+  8: "k6",
+  9: "g6",
+  10: "k7",
+  11: "g7",
+  12: "r8",
+};
 
 export function IntervalTrainer() {
   const [current, setCurrent] = useState<IntervalQuestion | null>(null);
@@ -22,6 +39,8 @@ export function IntervalTrainer() {
   const [correct, setCorrect] = useState(0);
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
+
+  const { language } = useLabelLanguage();
 
   const answerable = !!current && !isPlaying;
 
@@ -134,6 +153,13 @@ export function IntervalTrainer() {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [hasStarted, handleReplay, handleNext, isCorrect]);
+
+  const getShortLabel = (interval: IntervalDefinition): string => {
+    if (language === "de") {
+      return GERMAN_INTERVAL_CODES[interval.semitones] ?? interval.shortLabel;
+    }
+    return interval.shortLabel;
+  };
 
   return (
     <div className="flex h-full flex-col gap-4">
@@ -251,7 +277,7 @@ export function IntervalTrainer() {
                     onClick={() => handleAnswer(interval)}
                   >
                     <span className="font-mono text-[0.8rem] md:text-xs">
-                      {interval.shortLabel}
+                      {getShortLabel(interval)}
                     </span>
                   </Button>
                 );
@@ -275,7 +301,11 @@ export function IntervalTrainer() {
                 <p className="text-emerald-300">
                   Nice! That was a{" "}
                   <span className="font-semibold">
-                    {correctDefinition?.label} ({correctDefinition?.shortLabel})
+                    {correctDefinition?.label} (
+                    {correctDefinition
+                      ? getShortLabel(correctDefinition)
+                      : undefined}
+                    )
                   </span>
                   .
                 </p>
@@ -283,7 +313,11 @@ export function IntervalTrainer() {
                 <p className="text-rose-300">
                   Not quite. It was a{" "}
                   <span className="font-semibold">
-                    {correctDefinition?.label} ({correctDefinition?.shortLabel})
+                    {correctDefinition?.label} (
+                    {correctDefinition
+                      ? getShortLabel(correctDefinition)
+                      : undefined}
+                    )
                   </span>
                   .
                 </p>

@@ -11,6 +11,19 @@ import {
 } from "../../audio/musicTheory";
 import { playChordByMidi } from "../../audio/audioEngine";
 import { getBestStreak, updateBestStreak } from "../../utils/storage";
+import { useLabelLanguage } from "../../labels/LabelLanguage";
+
+const GERMAN_CHORD_CODES: Record<string, string> = {
+  maj: "D",
+  min: "M",
+  aug: "ü",
+  dim7: "v7",
+  maj7: "Dmaj7",
+  7: "D7",
+  add6: "D6",
+  min7: "M7",
+  min6: "M6",
+};
 
 export function ChordTrainer() {
   const [current, setCurrent] = useState<ChordQuestion | null>(null);
@@ -23,6 +36,8 @@ export function ChordTrainer() {
   const [correct, setCorrect] = useState(0);
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
+
+  const { language } = useLabelLanguage();
 
   const answerable = !!current && !isPlaying;
 
@@ -242,6 +257,12 @@ export function ChordTrainer() {
                   variant = "ghost";
                 }
 
+                const germanCode = GERMAN_CHORD_CODES[quality.id] ?? "";
+                const labelToShow =
+                  language === "de" && germanCode
+                    ? germanCode
+                    : quality.label;
+
                 return (
                   <Button
                     key={quality.id}
@@ -250,7 +271,7 @@ export function ChordTrainer() {
                     disabled={!answerable}
                     onClick={() => handleAnswer(quality)}
                   >
-                    <span className="text-xs md:text-sm">{quality.label}</span>
+                    <span className="text-xs md:text-sm">{labelToShow}</span>
                   </Button>
                 );
               })}
@@ -274,6 +295,9 @@ export function ChordTrainer() {
                   Beautiful! That was a{" "}
                   <span className="font-semibold">
                     {current.quality.label}
+                    {language === "de" &&
+                      GERMAN_CHORD_CODES[current.quality.id] &&
+                      ` (${GERMAN_CHORD_CODES[current.quality.id]})`}
                   </span>{" "}
                   chord:
                   <br />
@@ -286,6 +310,9 @@ export function ChordTrainer() {
                   This time it was a{" "}
                   <span className="font-semibold">
                     {current.quality.label}
+                    {language === "de" &&
+                      GERMAN_CHORD_CODES[current.quality.id] &&
+                      ` (${GERMAN_CHORD_CODES[current.quality.id]})`}
                   </span>{" "}
                   chord:
                   <br />

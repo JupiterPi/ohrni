@@ -1,4 +1,5 @@
 import { Logo } from "./Logo";
+import { LabelLanguageToggle } from "./LabelLanguageToggle";
 
 export function Header() {
   return (
@@ -17,6 +18,9 @@ export function Header() {
             Listen closely, then name what you hear&mdash;from tight seconds to lush sevenths.
           </p>
         </div>
+      </div>
+      <div className="flex justify-start md:justify-end">
+        <LabelLanguageToggle />
       </div>
     </header>
   );
