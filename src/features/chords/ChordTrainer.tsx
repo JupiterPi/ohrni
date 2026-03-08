@@ -245,7 +245,7 @@ export function ChordTrainer() {
                 return (
                   <Button
                     key={quality.id}
-                    size="sm"
+                    size="md"
                     variant={variant}
                     disabled={!answerable}
                     onClick={() => handleAnswer(quality)}

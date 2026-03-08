@@ -245,7 +245,7 @@ export function IntervalTrainer() {
                 return (
                   <Button
                     key={interval.id}
-                    size="sm"
+                    size="md"
                     variant={variant}
                     disabled={!answerable}
                     onClick={() => handleAnswer(interval)}

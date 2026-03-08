@@ -16,10 +16,10 @@ export function ModeToggle({ mode, onChange }: ModeToggleProps) {
           Start with intervals, then level up to four-note chords.
         </p>
       </div>
-      <div className="inline-flex rounded-full border border-slate-700/80 bg-slate-900/80 p-1 text-sm shadow-inner">
+      <div className="inline-flex w-full max-w-xs self-stretch rounded-full border border-slate-700/80 bg-slate-900/80 p-1 text-sm shadow-inner md:w-auto md:self-auto">
         <button
           type="button"
-          className={`relative min-w-[7rem] cursor-pointer rounded-full px-3 py-1.5 text-xs font-medium transition ${
+          className={`relative flex-1 cursor-pointer rounded-full px-3 py-1.5 text-center text-xs font-medium transition ${
             mode === "intervals"
               ? "bg-emerald-500 text-slate-950 shadow-sm"
               : "text-slate-300 hover:text-slate-100"
@@ -30,7 +30,7 @@ export function ModeToggle({ mode, onChange }: ModeToggleProps) {
         </button>
         <button
           type="button"
-          className={`relative min-w-[7rem] cursor-pointer rounded-full px-3 py-1.5 text-xs font-medium transition ${
+          className={`relative flex-1 cursor-pointer rounded-full px-3 py-1.5 text-center text-xs font-medium transition ${
             mode === "chords"
               ? "bg-emerald-500 text-slate-950 shadow-sm"
               : "text-slate-300 hover:text-slate-100"
