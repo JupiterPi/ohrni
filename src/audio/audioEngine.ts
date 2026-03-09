@@ -4,6 +4,8 @@ let audioContext: AudioContext | null = null;
 let masterGain: GainNode | null = null;
 let pianoInstrument: any | null = null;
 
+const DEFAULT_MASTER_GAIN = 0.8;
+
 async function ensureAudioContext(): Promise<AudioContext> {
   if (typeof window === "undefined") {
     throw new Error("AudioContext is only available in the browser.");
@@ -17,7 +19,7 @@ async function ensureAudioContext(): Promise<AudioContext> {
     }
     const ctx = new AC();
     const gain = ctx.createGain();
-    gain.gain.value = 0.25;
+    gain.gain.value = DEFAULT_MASTER_GAIN;
     gain.connect(ctx.destination);
 
     audioContext = ctx;
@@ -42,6 +44,14 @@ async function ensurePianoInstrument(): Promise<{
     return { ctx, piano: pianoInstrument };
   }
 
+  // The SoundFont player defaults to connecting straight to `ctx.destination`.
+  // Route it through our `masterGain` so it matches oscillator-based playback volume.
+  if (!masterGain) {
+    masterGain = ctx.createGain();
+    masterGain.gain.value = DEFAULT_MASTER_GAIN;
+    masterGain.connect(ctx.destination);
+  }
+
   // Dynamic import keeps this dependency browser-only.
   // Use `any` to sidestep missing type declarations for the remote module.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,7 +59,10 @@ async function ensurePianoInstrument(): Promise<{
     "return import('https://esm.sh/soundfont-player')",
   )();
   const Soundfont = (mod as any).default ?? (mod as any);
-  pianoInstrument = await Soundfont.instrument(ctx, "acoustic_grand_piano");
+  pianoInstrument = await Soundfont.instrument(ctx, "acoustic_grand_piano", {
+    destination: masterGain,
+    gain: 1,
+  });
   return { ctx, piano: pianoInstrument };
 }
 
@@ -65,7 +78,7 @@ function scheduleTone(
 ) {
   if (!masterGain) {
     masterGain = ctx.createGain();
-    masterGain.gain.value = 0.25;
+    masterGain.gain.value = DEFAULT_MASTER_GAIN;
     masterGain.connect(ctx.destination);
   }
 
